@@ -1,0 +1,28 @@
+body
+{
+    font-family:                arial, helvetica, sans-serif;
+    font-size:                  12px;
+    color:                      #000000;
+}
+
+a:link    {color: #990000; text-decoration: underline;}
+a:visited {color: #990000; text-decoration: underline;}
+a:hover   {color: #FFFFFF; text-decoration: none; background-color: #990000}
+a:active  {color: #990000; text-decoration: underline;}
+
+td
+{
+    font-family:      arial, helvetica, sans-serif;
+    font-size:        12px;
+    color:            #000000;
+}
+
+h1
+{
+    color:            #990000;
+}
+
+h2
+{
+    color:            #000099;
+}

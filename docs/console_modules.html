@@ -1,0 +1,180 @@
+<html>
+    <!-- $Id: console_modules.html 194 2007-04-05 15:31:53Z cameron $ -->
+<head>
+    <link rel="stylesheet" href="stylesheet.css">
+</head>
+<body>
+
+<h1>Console (GUI) and Modules</h1>
+
+<h2>Table of Contents</h2>
+<ol>
+    <li><a href="index.html">Overview</a></li>
+    <li><a href="installation.html">Installation</a></li>
+    <li><a href="scripts.html">Scripts and Tools</a></li>
+    <li><a href="console_modules.html">Console (GUI) and Modules</a></li>
+    <ul>
+        <li><a href="#console_menus">Console Menus</a>
+        <li><a href="#console_cli">Console Command Line Interface</a>
+        <li><a href="#PAIMEIdiff">PAIMEIdiff</a>
+        <li><a href="#PAIMEIdocs">PAIMEIdocs</a>
+        <li><a href="#PAIMEIexplore">PAIMEIexplore</a>
+        <li><a href="#PAIMEIfilefuzz">PAIMEIfilefuzz</a>
+        <li><a href="#PAIMEIpeek">PAIMEIpeek</a>
+        <li><a href="#PAIMEIpstalker">PAIMEIpstalker</a>
+    </ul>
+    <li><a href="developer_docs.html">Developer Docs</a></li>
+    <li><a href="authors_and_contributors.html">Authors and Contributors</a></li>
+</ol>
+
+<table border=0 cellpadding=0 cellspacing=0><tr><td width="100%">
+<a name="console_menus"></a><h2>Console Menus</h2>
+<h3>Connectons\MySQL Connect</h3>
+Establish a console wide connection to your database server. A MySQL connection is required for example in the pstalker and peek modules.
+
+<h3>Connectons\PyDbg Locale</h3>
+This option controls the console wide PyDbg setting of whether to debug remotely or locally. In the public release of PaiMei, only local debugging is supported and therefore you should never need to change this option.
+
+<h3>Connectons\Set Username</h3>
+Set your console-wide username which can then be used by any loaded module. The PAIMEIpeek module for example relies on this value to associate recorded actions with individual users.
+
+<h3>Connectons\uDraw(Graph) Connect</h3>
+Establish a console wide socket connection to udraw(Graph). A connection to uDraw is required only if you plan on doing dynamic graphing. The pstalker "uDraw Sync" command for example requires uDraw connectivity. <b>Note:</b> uDraw must be started with the <i>-server</i> option in order to be in listening mode. Example:
+<pre>
+    "C:\Program Files\uDraw(Graph)\bin\uDrawGraph.exe" -server
+</pre>
+
+<h3>Connectons\Save Options</h3>
+Save the current MySQL, uDraw and PyDbg connection settings as well as the current username to a serialized file on disk. This file is automatically parsed on startup to restore the set values but <b>NOT</b> the actual connections. See the next menu option for a shortcut to restoring connections.
+
+<h3>Connectons\Restore Connections</h3>
+Restore console-wide connectivity based on saved settings. Connections to MySQL, uDraw and PyDbg are automatically restored. See the status bar for the connection status.
+
+<h3>Advanced\Clear Log</h3>
+Clear the log window of the currently selected module.
+
+<h3>Advanced\Toggle Python Shell</h3>
+Show or hide the PaiMei command line interface.
+
+<h3>Help\About</h3>
+Display the about dialog box.
+
+<a name="console_cli"></a><h2>Console Command Line Interface</h2>
+The CLI is toggled with the <i>Advanced\Toggle Python Shell</i> menu option. Using the CLI, you can accomplish various advanced tasks that are otherwise not accessible through the GUI. The top level variable for accessing the namespace within the console is <i>paimei</i>, a shortcut alias of simply <i>p</i> is also available. While every attribute of each module will be accessible to your through the CLI, the author of any given module has the ability to document specific variables that you will likely be interested in. The documentation for the global and per module namespace is available on the right hand side of the CLI interface. Select the module (or 'PaiMei' for global) from the drop down to display a list of exposed variables. Select a variable to reveal the description. The CLI is a fully functional Python interpreter, so feel free to execute any Python statement or import any module you desire.
+
+<a name="PAIMEIdiff"></a><h2>PAIMEdiff</h2>
+
+This module has not yet been publicly released.
+
+<a name="PAIMEIdocs"></a><h2>PAIMEIdocs</h2>
+This module defaults to loading the documentation you are currently reading. Use the drop down menu at the top to select another category of documentation.
+
+<a name="PAIMEIexplore"></a><h2>PAIMEIexplore</h2>
+The public release of this module is sort of the "hello world" of the PaiMei console. Load a PIDA module into the top list control, then double click on it to load it into the tree control. Explore the various functions and basic blocks within the PIDA module. A full disassembly is displayed in the center panel. Connect to uDraw and view the control-flow graph of individual functions through the right-click context menu.
+
+<a name="PAIMEIfilefuzz"></a><h2>PAIMEIfilefuzz</h2>
+
+The file fuzz module is intended to demonstrate the use of the PaiMei framework for developing fuzzers. It is simple in design and operation but can be very effective at generating and running fuzzer test cases against any target application. The general workflow associated with this tool is broken down into two steps, test case generation and test case execution.
+
+<h3>Test Case Generation</h3>
+<ol>
+    <li> Add your source file path to the "Source File Name" input control.
+    <li> Add the destination path of the generated files to the "Destination Directory" input control.
+    <li> In the "Byte Modifications" sections input the value you would like to use for all byte modifications in the "Hex Bytes" input control.
+    <ol>
+        <li> The value should begin with a "0x" and be base 16.
+        <li> Multiple byte lengths can be used e.g. byte, word, dword.
+    </ol>
+    <li> Enter the starting file offset to begin modifications in the "Range Start" input control, leave blank to modify from the beginning of the file.
+    <li> Enter the ending file offset to stop modifications in the "Range End" input control, leave blank to modify until the end of the file.
+    <li> In the "Fuzz" section hit "Generate" to begin generating files.
+</ol>
+
+<h3>Test Case Execution</h3>
+<ol>
+    <li> After generation, the list of test cases should populate the "Fuzz" list box.  If you would like to run previously generated, or independently generated, test cases add the path to the "Destination Directory" and click "Refresh List".
+    <ol>
+        <li> At this moment there is no checking on whether the destination directory contains only desireable test case so be sure to seperate everything accordingly.
+        <li> Refreshing the list control will remove any existing test cases.
+    </ol>
+    <li> Add the path to the target application in the "Program Name" input control.
+    <li> Set the desired timeout value in the "Timeout" input box (a good choice for most target is ~5 seconds).
+    <li> In the "Fuzz" section hit "Run".
+</ol>
+
+<a name="PAIMEIpeek"></a><h2>PAIMEIpeek</h2>
+The peek module is intended to replace the earlier command line version that turned out to be usable only by its author. The primary usage of this tool is for locating "low hanging fruit" vulnerabilities in closed-source Windows software. There are three phases to using the peek tool:
+
+<h3>Reconnaissance</h3>
+You must begin by first running the <i>proc_peek_recon_db.py</i> IDA Python script, <b>after</b> IDA has finished its auto-analysis. The script asks for your MySQL server information and then determines / transfers a list of various potentially interesting locations within the binary (I call these "RECON points"). Example locations include discovered inline memcpy()'s, calls to various routines that take format strings <b>and</b> are passed a <i>%s</i> format string token as well as calls to potentially dangerous API such as strcat, strcpy and the like. For the full list, see the source code. It's by no means an exhaustive list in the current release.
+
+<h3>Capture</h3>
+With the RECON data in place, load the PAIMEIpeek module, hit "Select Module" and choose the appropriate module name. The list of discovered points will be enumerated in the list control. You can manually add to this list by hitting the "Add RECON Point" button.
+<br><br>
+The "Options" button pops up a dialog where you can specify the same options that the original command line version of this tool provided. The first check box controls whether or not to display context dumps in the log window at run-time. The next check box controls whether or not to hook and log the contents of the packets received by the Winsock recv() and recv_from() API. The next option allows you to specify an output file to store a copy of all log messages to. Finally, the Boron tag field allows you to specify a string to search all context dumps for. Boron tagging is a term coined by Greg Hoglund, you can read more about this concept in the sample chapter <a href="http://www.informit.com/articles/printerfriendly.asp?p=353553&rl=1">Reverse Engineering and Program Understanding</a> from his book <a href="http://www.amazon.com/exec/obidos/redirect?path=ASIN/0201786958&link_code=as2&camp=1789&tag=openreverseco-20&creative=9325">Exploiting Software</a>.
+<br><br>
+With your options set you are now ready to hit the "Peek!" button to select an existing process to attach to or a new process to load. PyDbg is then used to set breakpoints on each of the RECON points and monitor the output. When you are satisfied detach PyDbg from the target by hitting "Stop" (the Peek! button toggles back and forth depending on status). Your captured data is now refreshed into the list control and you are ready for analysis.
+
+<h3>Analysis</h3>
+Selecting a row from the list control fills the "Hits" columns with an entry for every time the selected RECON point was hit. Select one of the entries in the hits column to display the captured data in the "Peek Point Data" text control. Use the TAB, SHIFT-TAB, UP, DOWN, PAGE-UP and PAGE-DOWN keys to quickly navigate the interface.
+<br><br>
+The right-click context menu on the RECON list control allows you to edit, delete or self-assign an individual RECON point. In the edit dialog use the "Status" dropdown to set the state of the selected point. The states are as follows:
+<ul>
+    <li> new: No one has looked at this point yet.
+    <li> uncontrollable: According to empirical data, we can't influence the data at this point.
+    <li> clear: The point was examined thoroughly and determined that no vulnerability was present.
+    <li> unsure: More research on this point is necessary.
+    <li> vulnerable: This RECON point is in some way involved in an exposed vulnerability.
+</ul>
+The states "uncontrollable", "clear" and "vulnerable" are <b>CLOSED</b> states. The states "new" and "unsure" are <b>OPEN</b> states. The progress bar under the RECON list control shows how many RECON points have been closed out. As the progress bar begins to fill, your chances of discovering a "low hanging fruit" vulnerability starts to diminish.
+
+<a name="PAIMEIpstalker"></a><h2>PAIMEIpstalker</h2>
+The pstalker module is intended to replace the earlier developed <a href="http://www.openrce.org/downloads/details/171/Process_Stalker">Process Stalker</a> code coverage tool. While the currently exposed feature set is not as robust at what was previously possible using the various command line utilities, one of the biggest improvements to Process Stalker is the storage of metadata to MySQL as opposed to multiple files that can quickly get disorganized and confusing.
+
+<h3>Overview</h3>
+
+The pstalker module is broken into three distinct columns. <i>Data Sources</i>, which is where you manage and create the targets you are stalking as well as load the appropriate PIDA modules. <i>Data Exploration</i>, where you can view the results of any individual code coverage run or "stalk". <i>Data Capture</i>, which is where you select the process and options to stalk. The general workflow associated with this tool is as follows, read on for specifics:
+<ol>
+    <li> Create a new target and/or tag. Targets can contain multiple tags and each individual tag contains it's own saved code coverage data.
+    <li> Select a tag for staking.
+    <li> Load PIDA modules for every .DLL and the .EXE you wish to stalk.
+    <li> Launch your target.
+    <li> Refresh the process list under the data capture panel and select your target process for attaching or browse to the target process for loading.
+    <li> Configure the code coverage options and attach to the selected target.
+    <li> Interact with your target while code coverage is being recorded.
+    <li> When you are ready, detach from the target and wait for pstalker to export captured items to the database.
+    <li> Load the recorded hits to begin exploring your recorded data.
+</ol>
+
+The following sections provide more specific documentation about each of the three overall columns.
+
+<h3>Data Sources</h3>
+After you first establish console-wide MySQL connectivity, hit the "Retrieve Target List" button to propogate the data source explorer tree. Obviously if this is your first run it will be empty. You can add a new target from the right-click context menu of the root node labeled "Available Targets". The right-click context menu for individual targets allow you to delete the target, add a tag under the target as well as load the hits from <b>all</b> tags under the target into the data exploration pane. The right-click context menu for individual tags exposes a number of features:
+<ul>
+    <li> <i>Load Hits</i>, clear the data exploration pane and load the hits associated with the selected tag.
+    <li> <i>Append Hits</i>, append the hits associated with the selected tag after any existing data currently in the exploration pane.
+    <li> <i>Export to IDA</i>, export the hits under the selected tag as an IDC script suitable for import in IDA to highlight the hit functions / blocks.
+    <li> <i>Sync with uDraw</i>, synchronize the data exploration pane on the console-wide uDraw connection. Dual monitors are very helpful for this feature.
+    <li> <i>Use for Stalking</i>, store all recorded hits during data capture phase to the selected tag. You must select a tag for stalking prior to attaching to a process.
+    <li> <i>Filter Tag</i>, do not record hits for any of the nodes / basic blocks under the selected tag in future stalks. You can mark more then one tag for filtering.
+    <li> <i>Clear Tag</i>, keep the tag but remove all the hits stored under the tag. You <b>can not</b> stalk into a tag with any pre-existing data, so if you want to overwrite the contents of a tag be sure to clear it first.
+    <li> <i>Expand Tag</i>, for each hit function in the tag, generate and add an entry for every contained basic block, even if that basic block was not explicitly hit.
+    <li> <i>Target/Tag Properties</i>, modify the tag name, view/edit tag notes or modify the target name.
+    <li> <i>Delete Tag</i>, remove the tag and all the hits stored under the tag.
+</ul>
+The PIDA modules list control displays the list of loaded PIDA modules as well their individual function and basic block counts. Prior to attaching to your target you must select and load at least one PIDA module. During the code coverage phase, the PIDA module is referenced for setting breakpoints on functions and/or basic blocks. A PIDA module can be removed from the list through a right-click context menu. 
+
+<h3>Data Exploration</h3>
+The data exploraton pane is broken into three sections. The first section is propogated when you load or append hits from the <i>Data Sources</i> column. Each hit is displayed in a scrollable list box. Selecting one of the line items displays, if available, the context data associated with that hit in the <i>Dereferenced Data</i> text control. In between the list and text controls there are two progress bars that represent the total code coverage based on the number of individually hit basic blocks and functions listed in the exploration pane against the number of total basic blocks and functions across all loaded PIDA modules.
+
+<h3>Data Capture</h3>
+Once you have a tag selected for stalking, any appropriate filters applied and your target PIDA modules loaded, the next step is to actually attach to and stalk your target. Hit the <i>Retrieve List</i> button to display an up to date process list, newer processes are listed at the bottom. Select your target process for attaching or browse to your target process for loading, next select your coverage depth. Select <i>Functions</i> to monitor and track which functions are executed within your target or select <i>Basic Blocks</i> to further scrutinize the individual basic blocks executed. The <i>Restore BPs</i> checkbox controls whether or not to restore breakpoints after they have been hit. If you are only interested in <i>what</i> code was executed in your target, then leave the option disabled. Alternatively, if you are interested in both <i>what</i> was executed and the <i>order</i> in which it was executed, then you should enable the option. The <i>Heavy</i> checkbox controls whether or not pstalker will save context data at each recorded hit. Disable this option for increased speed. Uncheck the <i>Unhandled Only</i> check box to receive notification of debug exception events <b>even if</b> the debuggee is capable of correctly handling them. Finally, with all your options set and your target process selected hit the <i>Attach and Start Tracking</i> button to begin code coverage. Watch the log window for run-time information.
+
+<h3>Limitations</h3>
+
+There is one main limitation to this tool that you should be aware of. Specifically, the tool is reliant on the static analysis of the binary provided by IDA then it will fail when IDA makes mistakes. For example, if data is misrepresented as code then <i>bad things</i> can happen when pstalker sets breakpoints on that data. This is the most common reason for failure. Disabling the "Make final pass" analysis kernel option in IDA prior to the auto-analysis will disable the aggressive logic that makes these types of errors. However, your overall analysis will also suffer. Furthermore, packed or self-modifying code can not be traced currently.
+
+</td><td valign=top><img src="../logos/paimei-1.jpg" valign="top"></td></tr></table>
+
+</body>
+</html>

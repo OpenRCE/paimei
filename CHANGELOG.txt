@@ -1,0 +1,112 @@
+xx.xx.2006 [REV ]
+    docs:
+        - Updated library, module and developer documentation to reflect new additions.
+        - Updated generate_epydocs batch file for compatability with epydoc 3.x.
+    gui.console:
+        - Extended status bar to contain connection information.
+        - Added notion of "current user".
+        - Added menu option to save current connection settings / options.
+        - Added menu option to easily restore all saved connection settings.
+    gui.peek:
+        - New GUI module. Essentially the next version of proc peek (cmd line version now obsoleted).
+    gui.pstalker:
+        - Added timestamp column.
+        - Made columns sortable.
+    pgraph:
+        - Set default depth for graph_down() and graph_up() to infinite.
+        - Added logic to correctly handle newlines in node/edge labels during uDraw rendering.
+        - Added 'image' and 'info' (mouse over popup) support to uDraw rendering.
+    pstalker:
+        - Fixed handle leak in usage of iterate_modules().
+    pydbg:
+        - Improved detection of system breakpoints by resolving ntdll!DbgBreakPoint.
+        - Added logic for compatability with DebugBreakProcess() API.
+        - Bug fix in context dump (EBP was being resolved as ESI).
+        - Added MSR read/write support: read_msr(), write_msr().
+        - Added optional 'hex_dump' flag to smart_dereference to return hex dump in place of undetected strings.
+        - .disasm() routine now returns "[UNKNOWN]" when unable to process instruction.
+        - Added get_register() routine to compliment set_register().
+        - Fixed handle leak in addr_to_module().
+        - Added warning about handle leaks when break-ing out of iterate_xxx() routines.
+        - Bug fix during context dump of an exhausted stack.
+    pydasm:
+        - Bundled new version of pydasm which manually fixes a memory leak that was affecting PaiMei.
+
+
+09.13.2006 [REV 122]
+    docs:
+        - Fixed bug in PyDbg snippet example.
+        - Added basic documentation for public-release FileFuzz GUI module.
+    pida:
+        - Fixed bugs in rendering of GML graphs.
+    gui.filefuzz:
+        - Added multi-byte modifications feature.
+        - Fixed bug in statistic tracking.
+    heap_trace:
+        - Added tool for heap alloc/free tracking, useful for finding heap spray / memory leak vectors.
+    pida:
+        - wx is not longer a mandatory requirement for using the PIDA module.
+    gui.pstalker:
+        - Implemented CLI option to "watch for" and attach to a target process.
+    pydbg:
+        - Fixed handle leaks in load() routine.
+        - Fixed handle leaks in pydbg_core.
+        - Implemented hide_debugger() routine to hide from IsDebuggerPresent().
+        - Replaced various instances of DBG_CONTINUE with the more approriate DBG_EXCEPTION_NOT_HANDLED, this fix allows
+          for improved handling of debugging files with anti-debugging functionality.
+        - Fixed bug where breakpoints deleted from their own handler were still being restored.
+        - Added page_guard_clear() and page_guard_restore() functionality. This is useful for suspending memory
+          breakpoints to single step past a REP instruction.
+        - Added optional string 'prefix' argument to hex_dump() for customizing generated dumps.
+        - Removed assumption from func_resolve_debuggee() that all DLLs end in ".dll" (ie: QuickTime: .qts/.qtx)
+        - Replaced usage of '\\' with os.sep in system_dll.py.
+        - Bug fixes in cleanup() routines.
+    utils:
+        - MySQLdb is not longer a mandatory requirement for using the utils module.
+
+
+07.27.2006 [REV 97]
+    dpc:
+        - Disabled debug logging by defalt.
+    pydbg:
+        - Added get_instruction() libdasm wrapper.
+        - Replaced logic of to_decimal() routine with a *much* simpler one-liner.
+        - Added logic to improve differentiation between single step events and hardware breakpoint hits.
+    pydbg_core:
+        - Fixed multiple handle / memory leaks.
+        - Decoupled debug event handling from debug_event_loop(), in anticipation of utilizing the handler code
+          separately to implement step() / step_over() functionality.
+        - load() routine now obtains debug privileges just as attach() does.
+    utils:
+        - Added new utility, hooking, a helper class for abstracted API hooking. (see: http://openrce.org/blog/view/368)
+    pgraph:
+        - Robustness improvement in rendering of edges where the src or dst node does not exist.
+        - Added logic to make a best effort guess at node width/height in the absence of explicit values.
+    pstalker:
+        - Modified mark labels in IDC generation for cleaner sorting.
+
+
+06.20.2006 [REV 88]
+    __install_requirements.py:
+        - Fixed incorrect path bug.
+    dpc:
+        - Changed allocation page permissions for NX compatability.
+        - Added logic to free previously allocated instruction container.
+        - Fixed bug in context restore prior to exit that was causing some applications to crash on detach.
+    pydbg_core:
+        - Fixed bug in enumerate_modules(), the routine was actually unfinished and included a debug print message.
+        - Robustness bug fix in load() routine.
+    pydbg:
+        - Fixed bug in hardware breakpoint handling, sloppy error in last minute addition of custom handlers.
+    pstalker:
+        - Added confirmation dialog to 'confirm' right-click handler.
+        - Exposed advanced (CLI toggled) option for disabling breakpoint hit logging (speed increase).
+    ollydbg_receiver:
+        - Added command line options for specifying host and port of uDraw server.
+    docs:
+        - Updated the documentation.
+        - Most important change being the renaming of "PIDA file" to "PIDA module" ;-)
+
+
+06.16.2006 [REV 87]
+    - Initial public release at RECON 2006

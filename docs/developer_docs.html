@@ -1,0 +1,189 @@
+<html>
+    <!-- $Id: developer_docs.html 193 2007-04-05 13:30:01Z cameron $ -->
+<head>
+    <link rel="stylesheet" href="stylesheet.css">
+</head>
+<body>
+
+<h1>Developer Docs</h1>
+
+<h2>Table of Contents</h2>
+<ol>
+    <li><a href="index.html">Overview</a></li>
+    <li><a href="installation.html">Installation</a></li>
+    <li><a href="scripts.html">Scripts and Tools</a></li>
+    <li><a href="console_modules.html">Console (GUI) and Modules</a></li>
+    <li><a href="developer_docs.html">Developer Docs</a></li>
+    <ul>
+        <li><a href="#working_with_the_libraries">Working with the Libraries</a>
+        <li><a href="#creating_gui_modules">Creating GUI Modules</a>
+    </ul>
+    <li><a href="authors_and_contributors.html">Authors and Contributors</a></li>
+</ol>
+
+<a name="working_with_the_libraries"></a><h2>Working with the Libraries</h2>
+
+<h3>Overview</h3>
+
+As a developer you have two options for building tools on top of the framework, you can either create a command line tool or you can go one step further and create a module for the console (GUI). Aside from existing scripts and examples, the best reference for developers building utilities on top of PaiMei is the generated Epydoc documentation:
+<ul>
+    <li> <a href="pGRAPH/index.html">pGRAPH</a>
+    <li> <a href="PIDA/index.html">PIDA</a>
+    <li> <a href="PyDbg/index.html">PyDbg</a>
+    <li> <a href="Utilities/index.html">Utilities</a>
+</ul>
+
+<h3>pGRAPH</h3>
+
+TODO: add docs and examples
+
+<h3>PIDA</h3>
+
+TODO: add docs and examples
+
+<h3>PyDbg</h3>
+
+TODO: add docs and examples
+
+<h3>Utilities</h3>
+
+TODO: add docs and examples
+
+<a name="creating_gui_modules"></a><h2>Creating GUI Modules</h2>
+
+<h3>Overview</h3>
+
+If you plan on creating a module for PaiMei, read through this document and refer to existing modules for examples. There are a few standards that should be met in order to maintain consistency across the framework. If you want your tool included in the default public release bundle, please contact me directly: pedram [dot] amini [at] gmail [dot] com. You should know in advance however that I am completely obsessive compulsive with my code ... so make it clean and please document ;-)
+
+<table border=0 cellpadding=0 cellspacing=0><tr><td width="100%">
+<h3>Structure</h3>
+
+PaiMei will scan the images/icons directory on startup, looking for modules to load. If you create a new module and do not create an icon for it, your module will be ignored. The Photoshop template for icons is available in the docs directory, it is named <i>Listbook Graphic Templates.psd</i>. The core of the module itself must be implemented as a WxPanel and placed in the modules directory with the same name of the icon. All modules should be prefixed with "PAIMEI" and contain only lower-case letters in the name. For example, to add a module named 'explorer', create the following files:
+<pre>
+    images\icons\PAIMEIexplorer.png
+    modules\PAIMEIexplorer.py
+</pre>
+
+Support files for your module should be placed under a subdirectory within modules with the name '_PAIMEI[module name]'. Following our example:
+<pre>
+    modules\_PAIMEIexplorer\*
+</pre>
+</td><td valign=top><img src="../logos/paimei-2.jpg"></td></tr></table>
+
+<h3>WxGlade</h3>
+
+I recommend using WxGlade to build the basic structure / layout of your GUI module. Recall that the module you are creating must be implemented as a WxPanel. Launch WxGlade and create a new panel, naming both the panel and class 'PAIMEI[module_name]'. Select the option "Separate file for each class" and generate the Python code for your module. The panel you created will be implemented in 'PAIMEI[module name].py'. This is the file you will be editing / adding to. I've included the WxGlade project used to create some of the GUI panels and controls distributed with PaiMei in the top level docs directory, named <a href="PAIMEIwxglade.wxg">PAIMEIwxglade.wxg</a>. The "generic_frame" entry contains the skeleton structure for creating a two-paned window with an appropriately named log control. Duplicate this frame for a good start.
+
+<h3>Functions and Variables</h3>
+
+All module variables that you wish to expose to the user should be declared as class level variables. Class variables must be documented such as to guide users who may be interacting with your module through the command line interface. To document the variable, add an entry to the 'documented_properties' dictionary. Example:
+<pre>
+    documented_properties = {
+        <B><FONT COLOR="#BC8F8F">&quot;pida_modules&quot;</FONT></B> : <B><FONT COLOR="#BC8F8F">&quot;Dictionary of loaded PIDA modules.&quot;</FONT></B>,
+    }
+</pre>
+
+There are two class variables that you should declare in your module to access the global PaiMei namespace, self.list_book and self.main_frame:
+
+<pre>
+    self.list_book  = kwds[<B><FONT COLOR="#BC8F8F">&quot;parent&quot;</FONT></B>]             <I><FONT COLOR="#B22222"># handle to list book.
+    </FONT></I>self.main_frame = self.list_book.top         <I><FONT COLOR="#B22222"># handle to top most frame. 
+    </FONT></I>
+</pre>
+
+These handles are necessary for accessing the namespace of other modules and, more importantly, accessing the top level MySQL, PyDbg and uDraw variables (through <i>self.main_frame.xxxx</i>). When creating new controls, you should pass <i>self</i>, which within the control should be assigned to <i>self.top</i>, so that individual controls can access these variables as well (through <i>self.top.main_frame.xxxx</i>
+
+<h3>Interacting with the Status Bar</h3>
+
+The PaiMei status bar is split into multiple sections. Most are reserved for the framework, the second position (index 1) is for you to use freely for your module. Utilization of the status bar is optional, the method for interacting with the status bar is not. To begin, you must define two routines in your module:
+
+<pre>
+    <I><FONT COLOR="#B22222">####################################################################################################################
+    </FONT></I><B><FONT COLOR="#A020F0">def</FONT></B> <B><FONT COLOR="#0000FF">_get_status </FONT></B>(self):
+        <B><FONT COLOR="#BC8F8F">'''
+        Return the text to display in the status bar on page change.
+        '''</FONT></B>
+     
+        <B><FONT COLOR="#A020F0">return</FONT></B> self.status_msg
+     
+    <I><FONT COLOR="#B22222">####################################################################################################################
+    </FONT></I><B><FONT COLOR="#A020F0">def</FONT></B> <B><FONT COLOR="#0000FF">_set_status </FONT></B>(self, status_msg):
+        <B><FONT COLOR="#BC8F8F">'''
+        Set the text to display in the status bar.
+        '''</FONT></B>
+     
+        self.status_msg = status_msg
+        self.main_frame.status_bar.SetStatusText(self.status_msg, 1)
+    </pre>
+
+The _get_status() routine is called from the console as the user selects between various modules. This allows your module to maintain a status message persistently as the user transitions back and forth between modules.
+<br><br>
+
+<table border=0 cellpadding=0 cellspacing=0><tr><td width="100%">
+<h3>Creating a Log Window</h3>
+
+Utilizing a log window is optional. However, if you plan on using one it should be placed within a splitter and <b>must be</b> named 'log'. You must then create and bind a routine for handing situations where generated log data exceeds the maximum size of the log control:
+
+<pre>
+    self.Bind(wx.EVT_TEXT_MAXLEN, self.OnMaxLogLengthReached, self.log)
+     
+    <I><FONT COLOR="#B22222">####################################################################################################################
+    </FONT></I><B><FONT COLOR="#A020F0">def</FONT></B> <B><FONT COLOR="#0000FF">OnMaxLogLengthReached </FONT></B>(self, event):
+        <B><FONT COLOR="#BC8F8F">'''
+        Clear the log window when the max length is reach.
+        
+        @todo: Make this smarter by maybe only clearing half the lines.
+        '''</FONT></B>
+        
+        self.log.SetValue(<B><FONT COLOR="#BC8F8F">&quot;&quot;</FONT></B>)
+</pre>
+
+If you are placing your log control in a splitter window (which is wise) and you want to prevent the user from accidentally closing the log window. Then set a minimum pane size on the containing sizer:
+
+<pre>
+    self.log_splitter.SetMinimumPaneSize(25)
+</pre>
+
+Finally, create and utilize the following shortcut routines to the log control:
+
+<pre>
+    <I><FONT COLOR="#B22222">####################################################################################################################
+    </FONT></I><B><FONT COLOR="#A020F0">def</FONT></B> <B><FONT COLOR="#0000FF">err </FONT></B>(self, message):
+        <B><FONT COLOR="#BC8F8F">'''
+        Write an error message to log window.
+        '''</FONT></B>
+     
+        self.log.AppendText(<B><FONT COLOR="#BC8F8F">&quot;[!] %s\n&quot;</FONT></B> % message)
+     
+     
+    <I><FONT COLOR="#B22222">####################################################################################################################
+    </FONT></I><B><FONT COLOR="#A020F0">def</FONT></B> <B><FONT COLOR="#0000FF">msg </FONT></B>(self, message):
+        <B><FONT COLOR="#BC8F8F">'''
+        Write a log message to log window.
+        '''</FONT></B>
+     
+        self.log.AppendText(<B><FONT COLOR="#BC8F8F">&quot;[*] %s\n&quot;</FONT></B> % message)
+</pre>
+</td><td valign=top><img src="../logos/paimei-4.jpg"></td></tr></table>
+
+<h3>Take Pride in your Work</h3>
+
+At the bottom of the __init__() routine for your main wxPanel, write your name and module name to the log window:
+
+<pre>
+    self.msg(<B><FONT COLOR="#BC8F8F">&quot;PaiMei Explorer&quot;</FONT></B>)
+    self.msg(<B><FONT COLOR="#BC8F8F">&quot;Module by Pedram Amini\n&quot;</FONT></B>)
+</pre>
+
+<h3>Some Final Notes</h3>
+
+In case you haven't already noticed, there is no console-wide (global) PIDA modules container. Instead, each GUI module within PaiMei is responsible for loading and storing it's own PIDA modules. The reasoning behind this is that various console modules may have custom modifications they may need to make to the PIDA module on load, that can result in incompatibilities with other console modules. These leads to the natural question of, how does one add their own attributes to PIDA modules? Every class within the PIDA structure (module, function, basic block and instruction) contains a default-empty dictionary variable named <i>ext</i> (for extension or extending). To add your own attributes, simply create a new dictionary key with your module name and assign whatever type you want to it. For example, if I want to add a count of the number of times specific functions were accessed within a PIDA module, I might create the following addition:
+<pre>
+    for key in module.functions.keys():
+        module.functions[key].ext["PAIMEIexplore"] = {}
+        module.functions[key].ext["PAIMEIexplore"]["hit_count"] = 0
+</pre>
+If you want to save your attribute extensions, simply dump the PIDA module back to disk. The <i>ext</i> dictionary will be included in the file and restored the next time it is loaded.
+
+</body>
+</html>

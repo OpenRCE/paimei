@@ -1,0 +1,123 @@
+<html>
+    <!-- $Id: scripts.html 194 2007-04-05 15:31:53Z cameron $ -->
+<head>
+    <link rel="stylesheet" href="stylesheet.css">
+</head>
+<body>
+
+<h1>Scripts and Tools</h1>
+
+<h2>Table of Contents</h2>
+<ol>
+    <li><a href="index.html">Overview</a></li>
+    <li><a href="installation.html">Installation</a></li>
+    <li><a href="scripts.html">Scripts and Tools</a></li>
+    <ul>
+        <li><a href="#dpc">Debuggee Procedure Call (DPC)</a></li>
+        <li><a href="#ollydbg_connector_receiver">OllyDbg Connector / Receiver</a></li>
+        <li><a href="#pida_dump_load">PIDA Dump / Load</a></li>
+        <li><a href="#proc_peek">Proc Peek / Proc Peek Recon</a></li>
+    </ul>
+    <li><a href="console_modules.html">Console (GUI) and Modules</a></li>
+    <li><a href="developer_docs.html">Developer Docs</a></li>
+    <li><a href="authors_and_contributors.html">Authors and Contributors</a></li>
+</ol>
+
+<table border=0 cellpadding=0 cellspacing=0><tr><td width="100%">
+<a name="dpc"></a><h2>Debuggee Procedure Call (DPC)</h2>
+<b>Interface:</b> Command Line<br>
+<b>Requires:</b> PyDbg<br><br>
+
+This allows you to attach to a process and call arbitrary functions for exploratory purposes. Once attached you are presented with a prompt that can accept any valid Python statements. Use the <i>dbg</i> variable to access the current PyDbg instance pointer. For example if you want to resolve the address of an API, you can call <i>dbg.func_resolve_debuggee()</i>. A few convenience wrappers exist for allocating (<i>alloc()</i>), free-ing (<i>free()</i>, <i>free_all()</i>) and displaying allocated chunks (<i>show_all()</i>) of memory. To call a function within the debuggee, use the <i>dpc()</i> routine. This routine is the real core of the script. Given an address and arguments it will allocate and initialize space in the debuggee for storing the necessary instructions and arguments and then redirect EIP from the current thread to the newly created instructions. A breakpoint is written after the assembled instruction set that is caught by our breakpoint handler which re-prompts the user for further commands. Note: You *can not* directly assign the return value from dpc(). You must explicitly assign Eax, example:
+<pre>
+    var = dpc(0xdeadbeef, "pedram")     # INCORRECT
+    
+    dpc(0xdeadbeef, "pedram")           # CORRECT
+    var = dbg.context.Eax
+</pre>
+DPC also supports fast-call, to use simple specify a register value as a keyword argument. For example:
+<pre>
+    dpc(function, 10, "string", eax=0xdeadbeef, ecx="string")
+</pre>
+Other valid commands from the prompt include <i>DONE</i>, <i>GO</i> and <i>G</i> for leaving the command prompt loop and continuing the process (available for more advanced usage of the script). On a final note, while assigning variables from the command prompt is perfectly ok, assigned variables are <b>not</b> persistant across calls to <i>dpc()</i> or the various continue commands. A special global class pointer is available for storing persistant variables called <i>glob</i>, usage is simple:
+<pre>
+    glob.string = "A" * 500
+    glob.list   = []
+    glob.mbox   = dbg.func_resolve("user32", "MessageBoxA")
+</pre>
+To view assigned variables within the glob structure, simply <i>print glob</i>.
+<br><br>
+The general logic of the script is as follows:
+<ul>
+    <li>Allocate memory in the process.
+    <li>Reverse the argument list.
+    <li>For each numeric argument generate and write a PUSH instruction to the allocated block.
+    <li>For each string argument, allocate memory for the string then generate and write a PUSH instruction to the allocated block.
+    <li>For each specified register value, set it appropriately. If it is a string, allocate memory for the string and place the string address in the register.
+    <li>Generate and write a CALL instruction to the allocated block.
+    <li>Write an INT 3 (breakpoint) to the allocated block to resume debugger control and re-prompt the user for further inputs.
+</ul>
+
+<a name="ollydbg_connector_receiver"></a><h2>OllyDbg Connector / Receiver</h2>
+<b>Interface:</b> Command line, OllyDbg<br>
+<b>Requires:</b> uDraw, PIDA, OllyDbg<br><br>
+
+To use this utility you must install the OllyDbg connector plug-in from <i>ollydbg_connector\Release</i>, source code for the plug-in is available. Once installed, three new hotkeys are registered:
+
+<ul>
+    <li><b>, &lt;</b> Step into (F7) and transmit current location to OllyDbg receiver.
+    <li><b>. &gt;</b> Step over (F8) and transmit current location to OllyDbg receiver.
+    <li><b>/ ?</b> Transmit current location to OllyDbg receiver.
+</ul>
+
+The first time one of the hotkeys is hit, a dialog is displayed asking for the IP address of the OllyDbg receiver. When requested, the plug-in transmits the current module name and location to the receiver. The OllyDbg receiver script (<i>ollydbg_receiver.py</i>) listens on TCP port 7033 for connections from the connector plug-in. It will look in the current directory for .PIDA modules matching the transmitted module name. If found, a graph is generated and transmitted to uDraw(Graph). The receiver defaults to attempting to connect to uDraw(Graph) on 127.0.0.1:2542, this default setting can be overridden by the optional <i>-h, --host</i> and <i>-p, --port</i> parameters respectively. <b>Note:</b> The receiver script expects uDraw(Graph) to be started with the <i>-server</i> option. Example:
+<pre>
+    "C:\Program Files\uDraw(Graph)\bin\uDrawGraph.exe" -server
+</pre>
+When you transmit your location at the top of a function, a call graph is displayed. When you transmit your location from within a function, a control-flow graph is displayed. The current node you are in is highlighted <b>orange</b>, previously visited (and transmitted) nodes are highlighted in <b>blue</b>.
+
+<a name="pida_dump_load"></a><h2>PIDA Dump / Load</h2>
+<b>Interface:</b> IDA<br>
+<b>Requires:</b> PIDA, IDA<br><br>
+
+The PIDA dump script, <i>pida_dump.py</i>, is an IDA Python script that must be run <b>after</b> IDA has completed its auto-analysis on your target binary. The script presents a few dialogs prior to asking for the output PIDA module name. The first is what level of analysis you want "functions", "basic blocks" or "full". The memory consumption and file size difference between each of the three levels of analysis are drastically different, most notably so between "basic blocks" and "full". The next option controls whether or not to create nodes and edges within the PIDA module for API calls, if you're interested in seeing the relationship between the routines within your module and API calls then you should enable this option. Finally, you are asked if you would like the dump script to enumerate any available RPC interfaces and dispatch routines in the current module.
+
+<br><br>
+
+<b>Note:</b> If you are generating a PIDA module for whatever.dll, you <b>*must*</b> name the PIDA module whatever.dll.pida as a number of tools / utilities (such as pstalker and the OllyDbg receiver) expect this convention.
+
+<br><br>
+
+The PIDA load script, <i>pida_load.py</i>, is more of an example than anything else. Demonstrating how to load the contents of a PIDA module into memory. Occasionally, I find use in actually loading a PIDA module into my IDA session, this script can be used to accomplish that task.
+
+<a name="proc_peek"></a><h2>Proc Peek / Proc Peek Recon</h2>
+<b>Interface:</b> IDA, command line<br>
+<b>Requires:</b> PyDbg, IDA Python<br><br>
+
+<font color="#ff0000"><b>Note:</b></font> Seeing as how I was the only person capable of using this tool, I built a GUI version of this tool which is available through the PaiMei console and thereby deprecates the command line version.
+<br><br>
+This is a two part utility designed for locating "low hanging fruit" vulnerabilities in Windows software. To use this utility, you must first run the <i>proc_peek_recon.py</i> IDA Python script, again <b>after</b> IDA has finished its auto-analysis. A <i>.recon</i> file will be generated that contains the locations (I call these "peek points") of various potentially interesting locations within the binary. Example locations include discovered inline memcpy()'s, calls to various routines that take format strings <b>and</b> are passed a <i>%s</i> format string token as well as calls to potentially dangerous API such as strcat, strcpy and the like. For the full list, see the source code. It's by no means an exhaustive list in the current release.
+
+<br><br>
+
+Once the <i>.recon</i> file is generated, use the <i>proc_peek.py</i> script to attach to your target process and examine the data that comes across those various interesting locations. There are various command line options:
+
+<ul>
+    <li><b>&lt;-r | --recon RECON FILE&gt;</b>: name of proc_peek_recon output file, this is the only required argument
+    <li><b>[-p | --pid PID]</b>: pid to attach to (must specify this or watch)
+    <li><b>[-w | --watch PROC]</b>: target name to watch for and attach to
+    <li><b>[-i | --ignore PID]</b>: ignore a specific PID when watching for a target
+    <li><b>[-n | --noint]</b>: disable interactive prompts
+    <li><b>[-q | --quiet]</b>: disable run-time context dumps
+    <li><b>[-l | --log LOG FILE]</b>: report to file instead of screen
+    <li><b>[-h | --host REMOTE HOST]</b>: connect to a pydbg server
+    <li><b>[-b | --boron KEYWORD]</b>: alert us when a keyword is found within the context
+    <li><b>[-t | --track_recv]</b>: enable recv() and recvfrom() hit logging
+</ul>
+
+There are also various run-time prompt options that allow you to disable further examination of specific "peek points".
+
+</td><td valign=top><img src="../logos/paimei-3.jpg"></td></tr></table>
+
+</body>
+</html>

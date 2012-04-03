@@ -1,0 +1,73 @@
+# alphabetical order.
+
+Alex Ionescu <alex.ionescu@reactos.org>
+    - Debugger internals and debugger debugging support.
+
+Andrew Hintz <drew@overt.org>
+    - Addition of "Mark positions" option to pstalker IDA export.
+    - Beta testing.
+
+Cody Pierce <cpierce@tippingpoint.com>
+    - PAIMEIfilefuzz.
+    - General ideas, beta testing and morale support.
+    - Ongoing support and additions.
+
+Cameron Hotchkies <nummish@0x90.org>
+    - PIDA enhancements.
+    - General ideas, beta testing and morale support.
+    - Ongoing support and additions.
+
+ChanLeeYee <chanleeyee@f13-labs.net>
+    - PIDA enhancements in support for IDAPro version 6.0 and above.
+
+Charlie Miller <charlesamiller@hotmail.com>
+    - Bug fix in PyDbg context dump (EBP was being resolved as ESI).
+    - Big fix in proc_peek_recon.
+
+Chris Clark <cclark@isecpartners.com>
+    - Patches to PyDbg.
+
+Gerardo Richarte <gera@corest.com>
+    - Ideas, bug reports and fixes.
+    - Generally being a funny guy.
+
+Igor Skochinsky <http://www.openrce.org/profile/view/igorsk>
+    - Various bug reports, patches and support.
+
+Jared DeMott <jdemott@appliedsec.com>
+    - Helped locate and fix some handle leaks in pstalker.
+
+Justin Seitz <jms@bughunter.ca>
+    - Various bug fixes
+    - Authored utils\injection.py
+    - pydbg.pid_to_port()
+
+Matthew Mastracci <matthew@mastracci.com>
+    - pydasm memory leak fix.
+    - PyDbg get_register() addition.
+    - Robustness improvements to PyDbg.disasm().
+
+Mathew Murphy <mmurphy@tippingpoint.com>
+    - Memory and handle leak fixes.
+    - Windows API wizardry.
+
+Nicolas Pouvesle <nicolas.pouvesle@gmail.com>
+    - Ideas, bug reports and fixes.
+
+Otto Ebeling
+    - PyDbg enhancements and bug reports.
+
+Paul Sabanal <http://www.openrce.org/profile/view/p0l>
+    - Bug reports and debugging support.
+
+Peter Silberman <peter.silberman@gmail.com>
+    - PAIMEIdiff.
+    - Various framework enhancements.
+    - General ideas, beta testing and morale support.
+
+Rinat Zakirov <rinatzakirov@gmail.com>
+    - Click to sort columns to pstalker module.
+
+Thomas Ptacek <http://www.matasano.com/log/>
+    - Timestamp column to pstalker module.
+    - General ideas and public support.

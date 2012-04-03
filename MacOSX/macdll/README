@@ -1,0 +1,21 @@
+macdll
+------
+
+macdll is a library written in C which attempts to provide a translation from the Windows API to a Mac OS X API.  In particular it translates into the mach API.  It is certainly not complete and still under development.  Its original goal was to allow windows-specific python code, specifically Pai Mei, to run on an x86 mac.  It may be able to do this now.  The largest missing components right now are things having to do with how the application is loaded such as library locations and symbols.  Most of the low level debugging stuff works.  One caveat is that it down't support returning more than one handle, so don't do anything that requires more than that ;)
+
+Please direct feedback, comments, patches, and additional development to cmiller@securityevaluators.com
+
+To build:
+
+xcodebuild -target macdll -configuration debug
+
+(or use xcode GUI)
+
+Then either copy the resulting binary (build/Debug/libmacdll.dylib) to the working directory for your python scripts or /usr/lib (root required)
+
+Change the permissions on python to match (make sure you do it to the binary, not the link)
+-rwxr-sr-x   1 root  procmod  34308 Oct 18 03:40 /Library/Frameworks/Python.framework/Versions/Current/bin/python2.4
+(This is the same as gdb).  If you don't want to do this, run all your python scripts that require macdll as root.
+
+
+

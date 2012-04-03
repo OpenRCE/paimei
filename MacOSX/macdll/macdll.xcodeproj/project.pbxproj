@@ -1,0 +1,253 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 42;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		DA19137F0B97134C00C16A5C /* dyld.h in Headers */ = {isa = PBXBuildFile; fileRef = DA19137B0B97134C00C16A5C /* dyld.h */; };
+		DA1913800B97134C00C16A5C /* dyld.c in Sources */ = {isa = PBXBuildFile; fileRef = DA19137C0B97134C00C16A5C /* dyld.c */; };
+		DA6585710B437DC2008448DE /* Exception.c in Sources */ = {isa = PBXBuildFile; fileRef = 08FB7796FE84155DC02AAC07 /* Exception.c */; };
+		DA6585720B437DC2008448DE /* MachExceptions.defs in Sources */ = {isa = PBXBuildFile; fileRef = E4C382F60B31939500E008ED /* MachExceptions.defs */; settings = {ATTRIBUTES = (Server, ); }; };
+		DA6585730B437DC2008448DE /* implementation.c in Sources */ = {isa = PBXBuildFile; fileRef = DAD8819E0B3359A000EDC62E /* implementation.c */; };
+		DA6585750B437DC2008448DE /* MacDll.c in Sources */ = {isa = PBXBuildFile; fileRef = DACCC6C50B41B91800AD8E96 /* MacDll.c */; };
+		DA6585760B437DE5008448DE /* implementation.h in Headers */ = {isa = PBXBuildFile; fileRef = DAD881A80B335A3F00EDC62E /* implementation.h */; };
+		DA6585770B437DE5008448DE /* Exception.h in Headers */ = {isa = PBXBuildFile; fileRef = DAD881C10B335EB100EDC62E /* Exception.h */; };
+		DA6585780B437DE5008448DE /* windows.h in Headers */ = {isa = PBXBuildFile; fileRef = DACCC6C60B41B91800AD8E96 /* windows.h */; };
+		DA6585790B437DE5008448DE /* MacDll.h in Headers */ = {isa = PBXBuildFile; fileRef = DACCC6D70B41BA0900AD8E96 /* MacDll.h */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		08FB7796FE84155DC02AAC07 /* Exception.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = Exception.c; sourceTree = "<group>"; };
+		DA19137B0B97134C00C16A5C /* dyld.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = dyld.h; sourceTree = "<group>"; };
+		DA19137C0B97134C00C16A5C /* dyld.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = dyld.c; sourceTree = "<group>"; };
+		DA6585700B437DAF008448DE /* libmacdll.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = libmacdll.dylib; sourceTree = BUILT_PRODUCTS_DIR; };
+		DACCC6C50B41B91800AD8E96 /* MacDll.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; path = MacDll.c; sourceTree = "<group>"; };
+		DACCC6C60B41B91800AD8E96 /* windows.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = windows.h; sourceTree = "<group>"; };
+		DACCC6D70B41BA0900AD8E96 /* MacDll.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MacDll.h; sourceTree = "<group>"; };
+		DAD8819E0B3359A000EDC62E /* implementation.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = implementation.c; sourceTree = "<group>"; };
+		DAD881A80B335A3F00EDC62E /* implementation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = implementation.h; sourceTree = "<group>"; };
+		DAD881C10B335EB100EDC62E /* Exception.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Exception.h; sourceTree = "<group>"; };
+		E4C382F60B31939500E008ED /* MachExceptions.defs */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.mig; path = MachExceptions.defs; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		DA65856E0B437DAF008448DE /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		08FB7794FE84155DC02AAC07 /* ExceptionTest */ = {
+			isa = PBXGroup;
+			children = (
+				DACCC6D70B41BA0900AD8E96 /* MacDll.h */,
+				DACCC6C50B41B91800AD8E96 /* MacDll.c */,
+				DACCC6C60B41B91800AD8E96 /* windows.h */,
+				DAD881A80B335A3F00EDC62E /* implementation.h */,
+				08FB7796FE84155DC02AAC07 /* Exception.c */,
+				DA19137B0B97134C00C16A5C /* dyld.h */,
+				DA19137C0B97134C00C16A5C /* dyld.c */,
+				DAD8819E0B3359A000EDC62E /* implementation.c */,
+				E4C382F60B31939500E008ED /* MachExceptions.defs */,
+				DAD881C10B335EB100EDC62E /* Exception.h */,
+				E44371B809B87B6F009066D0 /* Products */,
+			);
+			name = ExceptionTest;
+			sourceTree = "<group>";
+		};
+		E44371B809B87B6F009066D0 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				DA6585700B437DAF008448DE /* libmacdll.dylib */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXHeadersBuildPhase section */
+		DA65856C0B437DAF008448DE /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				DA6585760B437DE5008448DE /* implementation.h in Headers */,
+				DA6585770B437DE5008448DE /* Exception.h in Headers */,
+				DA6585780B437DE5008448DE /* windows.h in Headers */,
+				DA6585790B437DE5008448DE /* MacDll.h in Headers */,
+				DA19137F0B97134C00C16A5C /* dyld.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXHeadersBuildPhase section */
+
+/* Begin PBXNativeTarget section */
+		DA65856F0B437DAF008448DE /* macdll */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = DA65857C0B437E0A008448DE /* Build configuration list for PBXNativeTarget "macdll" */;
+			buildPhases = (
+				DA65856C0B437DAF008448DE /* Headers */,
+				DA65856D0B437DAF008448DE /* Sources */,
+				DA65856E0B437DAF008448DE /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = macdll;
+			productName = macdll;
+			productReference = DA6585700B437DAF008448DE /* libmacdll.dylib */;
+			productType = "com.apple.product-type.library.dynamic";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		08FB7793FE84155DC02AAC07 /* Project object */ = {
+			isa = PBXProject;
+			buildConfigurationList = 1DEB928908733DD80010E9CD /* Build configuration list for PBXProject "macdll" */;
+			compatibilityVersion = "Xcode 2.4";
+			hasScannedForEncodings = 1;
+			mainGroup = 08FB7794FE84155DC02AAC07 /* ExceptionTest */;
+			productRefGroup = 08FB7794FE84155DC02AAC07 /* ExceptionTest */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				DA65856F0B437DAF008448DE /* macdll */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXSourcesBuildPhase section */
+		DA65856D0B437DAF008448DE /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				DA1913800B97134C00C16A5C /* dyld.c in Sources */,
+				DA6585710B437DC2008448DE /* Exception.c in Sources */,
+				DA6585720B437DC2008448DE /* MachExceptions.defs in Sources */,
+				DA6585730B437DC2008448DE /* implementation.c in Sources */,
+				DA6585750B437DC2008448DE /* MacDll.c in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		1DEB928A08733DD80010E9CD /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				DEPLOYMENT_POSTPROCESSING = NO;
+				GCC_DYNAMIC_NO_PIC = YES;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = "";
+				GCC_SYMBOLS_PRIVATE_EXTERN = YES;
+				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_LABEL = YES;
+				GCC_WARN_UNUSED_PARAMETER = YES;
+				GCC_WARN_UNUSED_VALUE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = (
+					/Library/Frameworks/Python.framework/Versions/2.4/include/python2.4,
+					"$(HEADER_SEARCH_PATHS)",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 10.4;
+				OTHER_LDFLAGS = "-Wl,-read_only_relocs,suppress";
+				PREBINDING = NO;
+				SDKROOT = "";
+				WARNING_CFLAGS = "-Wall";
+			};
+			name = Debug;
+		};
+		1DEB928B08733DD80010E9CD /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				DEPLOYMENT_POSTPROCESSING = YES;
+				GCC_DYNAMIC_NO_PIC = YES;
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_OPTIMIZATION_LEVEL = s;
+				GCC_PREPROCESSOR_DEFINITIONS = NDEBUG;
+				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_LABEL = YES;
+				GCC_WARN_UNUSED_PARAMETER = YES;
+				GCC_WARN_UNUSED_VALUE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = (
+					/Library/Frameworks/Python.framework/Versions/2.4/include/python2.4,
+					"$(HEADER_SEARCH_PATHS)",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 10.4;
+				OTHER_LDFLAGS = "-Wl,-read_only_relocs,suppress";
+				PREBINDING = NO;
+				SDKROOT = "";
+				WARNING_CFLAGS = "-Wall";
+			};
+			name = Release;
+		};
+		DA65857D0B437E0A008448DE /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+				EXECUTABLE_PREFIX = lib;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				INSTALL_PATH = /usr/local/lib;
+				PREBINDING = NO;
+				PRODUCT_NAME = macdll;
+				ZERO_LINK = YES;
+			};
+			name = Debug;
+		};
+		DA65857E0B437E0A008448DE /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = YES;
+				EXECUTABLE_PREFIX = lib;
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
+				GCC_MODEL_TUNING = G5;
+				INSTALL_PATH = /usr/local/lib;
+				PREBINDING = NO;
+				PRODUCT_NAME = macdll;
+				ZERO_LINK = NO;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		1DEB928908733DD80010E9CD /* Build configuration list for PBXProject "macdll" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1DEB928A08733DD80010E9CD /* Debug */,
+				1DEB928B08733DD80010E9CD /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		DA65857C0B437E0A008448DE /* Build configuration list for PBXNativeTarget "macdll" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				DA65857D0B437E0A008448DE /* Debug */,
+				DA65857E0B437E0A008448DE /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 08FB7793FE84155DC02AAC07 /* Project object */;
+}

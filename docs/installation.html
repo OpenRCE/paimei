@@ -1,0 +1,136 @@
+<html>
+    <!-- $Id: installation.html 194 2007-04-05 15:31:53Z cameron $ -->
+<head>
+    <link rel="stylesheet" href="stylesheet.css">
+</head>
+<body>
+
+<h1>Installation</h1>
+
+<h2>Table of Contents</h2>
+<ol>
+    <li><a href="index.html">Overview</a></li>
+    <li><a href="installation.html">Installation</a></li>
+    <ul>
+        <li><a href="#quickstart">Quick Start</a></li>
+        <li><a href="#detailed">Detailed Installation Guide</a></li>
+    </ul>
+    <li><a href="scripts.html">Scripts and Tools</a></li>
+    <li><a href="console_modules.html">Console (GUI) and Modules</a></li>
+    <li><a href="developer_docs.html">Developer Docs</a></li>
+    <li><a href="authors_and_contributors.html">Authors and Contributors</a></li>
+</ol>
+
+<a name="quickstart"></a><h2>Quick Start</h2>
+
+The quickest way to get up and running with an almost full installation of the framework is as follows:
+
+<ol>
+    <li> Install Python 2.4, <a href="http://www.python.org/ftp/python/2.4.3/python-2.4.3.msi">Windows Python-2.4.3.msi</a>
+    <li> Launch <i>__install_requirements.py</i> and follow the interactive prompts to download / install requirements.
+    <li> Launch <i>__setup_mysql.py</i> (requires command line arguments) to setup the MySQL database for pstalker.
+    <li> Launch <i>console\PAIMEIconsole.pyw</i> to pull up the GUI.
+    <li> Install <a href="http://www.d-dome.net/idapython">IDA Python</a>.
+    <li> Launch IDA, load a target executable and run the <i>pida_dump.py</i> IDA Python script to generate a PIDA file.
+    <li> Load the PIDA file in the GUI and you're up and running.
+</ol>
+
+<a name="detailed"></a><h2>Detailed Installation Guide</h2>
+
+I won't lie to you, there are a number of pre-requisites for a <i>complete</i> install of the PaiMei framework. Luckily, none of them are difficult to install and many of them you probably already have. Not every portion of the framework relies on all of the pre-reqs. The following table should help you get started on deciding what you will need:
+
+<br><br>
+
+<center><table border=1 cellpadding=10 cellspacing=0 width="60%">
+    <tr>
+        <td><b>Requirement</b></td>
+        <td><b>Available From</b></td>
+        <td><b>PyDbg</b></td>
+        <td><b>PIDA</b></td>
+        <td><b>GUI</b></td>
+        <td><b>Needed For</b></td>
+    </tr>
+    <tr>
+        <td>Python 2.4</td>
+        <td><a href="http://www.python.org">http://www.python.org</a></td>
+        <td align="center"><b>Y</b></td>
+        <td align="center"><b>Y</b></td>
+        <td align="center"><b>Y</b></td>
+        <td>Everything ;-) You definetely need to have this.</td>
+    </tr>
+    <tr>
+        <td>IDA Pro</td>
+        <td><a href="http://www.datarescue.com/idabase/">http://www.datarescue.com/idabase/</a></td>
+        <td align="center">&nbsp;</td>
+        <td align="center"><b>Y</b></td>
+        <td align="center">&nbsp;</td>
+        <td>Static analysis such as for PIDA generation. You probably already have this.</td>
+    </tr>
+    <tr>
+        <td>IDA Python</td>
+        <td><a href="http://www.d-dome.net/idapython">http://www.d-dome.net/idapython</a></td>
+        <td align="center">&nbsp;</td>
+        <td align="center"><b>Y</b></td>
+        <td align="center">&nbsp;</td>
+        <td>PIDA generation, process stalking. You should install this if you haven't already.</td>
+    </tr>
+    <tr>
+        <td>WxPython</td>
+        <td><a href="http://www.wxpython.org">http://www.wxpython.org</a></td>
+        <td align="center">&nbsp;</td>
+        <td align="center">&nbsp;</td>
+        <td align="center"><b>Y</b></td>
+        <td>Wx is required for PAIMEIconsole, the GUI component. If you don't plan on using the GUI, don't worry about this.</td>
+    </tr>
+    <tr>
+        <td>MySQL / MySQLdb</td>
+        <td><a href="http://www.mysql.org">http://www.mysql.org</a><br><a href="http://sourceforge.net/projects/mysql-python">http://sourceforge.net/projects/mysql-python</a></td>
+        <td align="center">&nbsp;</td>
+        <td align="center">&nbsp;</td>
+        <td align="center"><b>Y</b></td>
+        <td>The PAIMEIpstalker code coverage tool requires a MySQL database and the Python bindings. The code coverage utility can also store/load from disk, so you only need this module if you plan on using the GUI.</td>
+    </tr>
+    <tr>
+        <td>Python ctypes</td>
+        <td><a href="http://starship.python.net/crew/theller/ctypes/">http://starship.python.net/crew/theller/ctypes/</a></td>
+        <td align="center"><b>Y</b></td>
+        <td align="center">&nbsp;</td>
+        <td align="center"><b>Y</b></td>
+        <td>Required for PyDbg and portions of the console, such as the code coverage tool.</td>
+    </tr>
+    <tr>
+        <td>uDraw(Graph)</td>
+        <td><a href="http://www.informatik.uni-bremen.de/uDrawGraph/en/home.html">http://www.informatik.uni-bremen.de/uDrawGraph/en/home.html</a></td>
+        <td align="center">&nbsp;</td>
+        <td align="center">&nbsp;</td>
+        <td align="center">&nbsp;</td>
+        <td>Required only if you wish to generate static / interactive graphs with uDraw. I recommend you install this.</td>
+    </tr>
+    <tr>
+        <td>GraphViz / PyDot</td>
+        <td><a href="http://www.graphviz.org">http://www.graphviz.org</a><br><a href="http://dkbza.org/pydot.html">http://dkbza.org/pydot.html</a></td>
+        <td align="center">&nbsp;</td>
+        <td align="center">&nbsp;</td>
+        <td align="center">&nbsp;</td>
+        <td>Required only if you wish to generate static graphs in Dot. You probably don't need this module.</td>
+    </tr>
+    <tr>
+        <td>Oreas GDE</td>
+        <td><a href="http://www.oreas.com/gde_en.php">http://www.oreas.com/gde_en.php</a></td>
+        <td align="center">&nbsp;</td>
+        <td align="center">&nbsp;</td>
+        <td align="center">&nbsp;</td>
+        <td>Required for GML rendering. Of the 3 currently supported graph rendering routines, this is the prettiest.</td>
+    </tr>
+</table></center>
+
+<br><br>
+
+You can run the <i>__install_requirements.py</i> Python script to help determine which of the above components you already have installed and to automatically download and install missing components. Once you have all the pre-requisites up and running, to install the PyDbg, pGRAPH, PIDA and utility libraries to your system wide Python directory, simply run the included Microsoft Windows installer. You can then individually launch the console or various scripts from any path on the system. Alternatively, you can keep the entire package: console, scripts, libraries and all together. For a full installation, the final step is to setup the <i>paimei</i> MySQL database. The database name is <b>not</b> optional. You can either manually setup the database yourself using the schema described in <i>"docs\SQL Structure.txt"</i>. Alternatively, you can use the <i>__setup_mysql.py</i> helper script to do the work for you.
+
+<br><br>
+
+With everything installed and operational you can launch the GUI console through <i>console\PAIMEIconsole.pyw</i> or start tinkering with the various included scripts such as <i>debuggee_procedure_call.py</i>. For a quick example of an advanced creation on top of the PaiMei framework see the <a href="http://pedram.redhive.com/PaiMei/docs/PAIMEIpstalker_flash_demo/index.html">PAIMEIpstalker Flash demo</a>.
+
+</body>
+</html>

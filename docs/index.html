@@ -1,0 +1,180 @@
+<html>
+    <!-- $Id: index.html 193 2007-04-05 13:30:01Z cameron $ -->
+<head>
+    <link rel="stylesheet" href="stylesheet.css">
+</head>
+<body>
+
+<h1>PaiMei - Reverse Engineering Framework</h1>
+
+<h2>Table of Contents</h2>
+<ol>
+    <li><a href="index.html">Overview</a></li>
+    <ul>
+        <li><a href="#introduction">Introduction</a></li>
+        <li><a href="#pydbg">PyDbg</a></li>
+        <li><a href="#pida">PIDA</a></li>
+        <li><a href="#future_development">Future Development</a></li>
+    </ul>
+    <li><a href="installation.html">Installation</a></li>
+    <li><a href="scripts.html">Scripts and Tools</a></li>
+    <li><a href="console_modules.html">Console (GUI) and Modules</a></li>
+    <li><a href="developer_docs.html">Developer Docs</a></li>
+    <li><a href="authors_and_contributors.html">Authors and Contributors</a></li>
+</ol>
+
+<table border=0 cellpadding=0 cellspacing=0><tr><td width="100%">
+<a name="introduction"></a><h2>Introduction</h2>
+
+PaiMei, is a reverse engineering framework consisting of multiple extensible components. The framework can essentially be thought of as a reverse engineer's swiss army knife and has already been proven effective for a wide range of both static and dynamic tasks such as fuzzer assistance, code coverage tracking, data flow tracking and more. The framework breaks down into the following core components:
+
+<br><br>
+
+<ul>
+    <li> <b>PyDbg</b>: A pure Python win32 debugging abstraction class.
+    <li> <b>pGRAPH</b>: A graph abstraction layer with seperate classes for nodes, edges and clusters.
+    <li> <b>PIDA</b>: Built on top of pGRAPH, PIDA aims to provide an abstract and persistent interface over binaries (DLLs and EXEs) with separate classes for representing functions, basic blocks and instructions. The end result is the creation of a portable file that when loaded allows you to arbitrarily navigate throughout the entire original binary.
+</ul>
+
+A layer above the core components you will find the remainder of the PaiMei framework broken into the following over-arching components:
+
+<ul>
+    <li> <b>Utilities</b>: A set of utilities for accomplishing various repetitive tasks.
+    <li> <b>Console</b>: A pluggable WxPython GUI for quickly and efficiently rolling out your own sexy RE utilities.
+    <li> <b>Scripts</b>: Individual scripts for accomplishing various tasks. One very important example of which is the pida_dump.py IDA Python script which is run from IDA to generate .PIDA modules. 
+</ul>
+</td><td valign=top><img src="../logos/paimei-1-cutout.jpg"></td></tr></table>
+
+For a quick example of an advanced creation on top of the PaiMei framework see the <a href="http://pedram.redhive.com/PaiMei/docs/PAIMEIpstalker_flash_demo/index.html">PAIMEIpstalker Flash demo</a>.
+
+<a name="pydbg"></a><h2>PyDbg</h2>
+
+PyDbg exposes most of the expected debugger functionality and then some. Hardware / software / memory breakpoints, process / module / thread enumeration and instrumentation, system DLL tracking, memory reading/writing and intelligent dereferencing, stack and SEH unwinding, exception and event handling, endian manipulation routines, memory snapshot and restore functionality, disassembly (libdasm) engine, and more ... The abstracted interface allows for painless development of custom debugger scripts. Diving right into the thick of things, consider the following example snippet:
+
+<pre>
+    <B><FONT COLOR="#A020F0">from</FONT></B> pydbg <B><FONT COLOR="#A020F0">import</FONT></B> *
+    <B><FONT COLOR="#A020F0">from</FONT></B> pydbg.defines <B><FONT COLOR="#A020F0">import</FONT></B> *
+    
+    <B><FONT COLOR="#A020F0">def</FONT></B> <B><FONT COLOR="#0000FF">handler_breakpoint </FONT></B>(pydbg):
+       <I><FONT COLOR="#B22222"># ignore the first windows driven breakpoint.</FONT></I>
+       <B><FONT COLOR="#A020F0">if</FONT></B> pydbg.first_breakpoint:
+           <B><FONT COLOR="#A020F0">return</FONT></B> DBG_CONTINUE
+    
+       print <B><FONT COLOR="#BC8F8F">&quot;ws2_32.recv() called from thread %d @%08x&quot;</FONT></B> % (pydbg.dbg.dwThreadId, pydbg.exception_address)
+    
+       <B><FONT COLOR="#A020F0">return</FONT></B> DBG_CONTINUE
+    
+    dbg = pydbg()
+    
+    <I><FONT COLOR="#B22222"># register a breakpoint handler function.</FONT></I>
+    dbg.set_callback(EXCEPTION_BREAKPOINT, handler_breakpoint)
+    dbg.attach(XXXXX)
+    
+    recv = dbg.func_resolve(<B><FONT COLOR="#BC8F8F">&quot;ws2_32&quot;</FONT></B>, <B><FONT COLOR="#BC8F8F">&quot;recv&quot;</FONT></B>)
+    dbg.bp_set(recv)
+    
+    dbg.debug_event_loop()
+</pre>
+
+We attach to a target process, set a breakpoint on ws2_32.recv() and print a message every time the API is called. All in less than 15 lines of code. Not too shabby.
+
+<a name="pida"></a><h2>PIDA</h2>
+
+<table border=0 cellpadding=0 cellspacing=0><tr><td width="100%">
+The crux of the PIDA component is based on IDA / IDA Python, which is used to propogate all of the initial structural data. Once the initial analysis is complete the data can be serialized to and loaded from a zlib compressed file. This allows you to extract all the relevant attributes you are interested in from the IDA database and access it "on the fly" in whatever standalone application you are creating. The usage of a generic Python binary representation allows us to consider dropping the reliance on IDA in the future. To generate a PIDA module currently, run the <i>pida_dump.py</i> IDA Python script <b>after</b> IDA has completed auto-analysis on your target binary.
+
+<br><br>
+
+The object structure is built on pGRAPH and can be thought of as a graph of graphs. Each component has it's own relevant attributes that we won't enumerate here. A module is a graph containing functions as nodes with the edges between the nodes representing the intramodular calls. Each function is a graph as well as a node. The nodes of a function are the basic blocks that it consists of (including chunked blocks). Each basic block is a node that contains a list of instructions. Finally, individual instructions are not graph objects but rather a simple struct with various attributes.
+
+<br><br>
+
+At any point you can take advantage of the graph abstraction to create arbitrary down / up graphs, graph intersections, graph concatenations, etc... The generated graphs can be rendered in either GML, GraphViz or uDraw formats. Consider the following simple example that will step through every function, basic block and instruction within a module and produce various outputs along the way:
+
+<pre>
+    <B><FONT COLOR="#A020F0">import</FONT></B> pida
+    
+    module = pida.load(<B><FONT COLOR="#BC8F8F">&quot;some_file.pida&quot;</FONT></B>)
+    
+    <I><FONT COLOR="#B22222"># render a function graph in GML format for the entire module.
+    </FONT></I>fh = open(<B><FONT COLOR="#BC8F8F">&quot;graphs/functions.gml&quot;</FONT></B>, <B><FONT COLOR="#BC8F8F">&quot;w+&quot;</FONT></B>)
+    fh.write(module.render_graph_gml())
+    fh.close()
+    
+    <I><FONT COLOR="#B22222"># render a function graph in uDraw format for the entire module.
+    </FONT></I>fh = open(<B><FONT COLOR="#BC8F8F">&quot;graphs/functions.udg&quot;</FONT></B>, <B><FONT COLOR="#BC8F8F">&quot;w+&quot;</FONT></B>)
+    fh.write(module.render_graph_udraw())
+    fh.close()
+    
+    <I><FONT COLOR="#B22222"># step through each function in the module:
+    </FONT></I><B><FONT COLOR="#A020F0">for</FONT></B> function <B><FONT COLOR="#A020F0">in</FONT></B> module.nodes.values():
+        <I><FONT COLOR="#B22222"># if we found the first function we are interested in
+    </FONT></I>    <B><FONT COLOR="#A020F0">if</FONT></B> function.ea_start == 0x00407950:
+            <I><FONT COLOR="#B22222"># step through each basic block in the function.
+    </FONT></I>        <B><FONT COLOR="#A020F0">for</FONT></B> bb <B><FONT COLOR="#A020F0">in</FONT></B> function.nodes.values():
+                <B><FONT COLOR="#A020F0">print</FONT></B> <B><FONT COLOR="#BC8F8F">&quot;\t%08x - %08x&quot;</FONT></B> % (bb.ea_start, bb.ea_end)
+                <I><FONT COLOR="#B22222"># print each instruction in each basic block.
+    </FONT></I>            <B><FONT COLOR="#A020F0">for</FONT></B> ins <B><FONT COLOR="#A020F0">in</FONT></B> bb.instructions.values():
+                    <B><FONT COLOR="#A020F0">print</FONT></B> <B><FONT COLOR="#BC8F8F">&quot;\t\t%s&quot;</FONT></B> % ins.disasm
+    
+            <I><FONT COLOR="#B22222"># render a GML graph of this function.
+    </FONT></I>        fh = open(<B><FONT COLOR="#BC8F8F">&quot;graphs/function.gml&quot;</FONT></B>, <B><FONT COLOR="#BC8F8F">&quot;w+&quot;</FONT></B>)
+            fh.write(function.render_graph_gml())
+            fh.close()
+    
+            <I><FONT COLOR="#B22222"># render a GraphViz PNG of this function too.
+    </FONT></I>        graph = function.render_graph_graphviz()
+            graph.write_png(<B><FONT COLOR="#BC8F8F">&quot;graphs/function.png&quot;</FONT></B>, prog=<B><FONT COLOR="#BC8F8F">&quot;dot&quot;</FONT></B>)
+    
+        <I><FONT COLOR="#B22222"># if we found the second function we are interested in.
+    </FONT></I>    <B><FONT COLOR="#A020F0">if</FONT></B> function.name == "some_routine":
+            <I><FONT COLOR="#B22222"># render a GML format proximity graph.
+    </FONT></I>        fh = open(<B><FONT COLOR="#BC8F8F">&quot;graphs/proximity.udg&quot;</FONT></B>, <B><FONT COLOR="#BC8F8F">&quot;w+&quot;</FONT></B>)
+            <I><FONT COLOR="#B22222"># look 3 levels up and 2 levels down
+    </FONT></I>        prox_graph = module.graph_proximity(function.id, 3, 2)
+            fh.write(prox_graph.render_graph_udraw())
+            fh.close()
+</pre>
+
+Consider another, more real-world example. You need to locate all functions within a binary that at some point open a file. You want to display all possible execution paths from the entry point of each of these functions to the API call responsible for opening the file. Finally, you want to display this data as a graph, per function. The task is easily accomplished:
+
+<pre>
+    <I><FONT COLOR="#B22222"># for each function in the module
+    </FONT></I><B><FONT COLOR="#A020F0">for</FONT></B> function <B><FONT COLOR="#A020F0">in</FONT></B> module.functions.values():
+        <I><FONT COLOR="#B22222"># create a downgraph from the current routine and locate the calls to [Open|Create]File[A|W]
+    </FONT></I>    downgraph = module.graph down(function.ea start, -1)
+        matches = [node <B><FONT COLOR="#A020F0">for</FONT></B> node <B><FONT COLOR="#A020F0">in</FONT></B> downgraph.nodes.values() <B><FONT COLOR="#A020F0">if</FONT></B> re.match(<B><FONT COLOR="#BC8F8F">&quot;.*(create|open)file.*&quot;</FONT></B>, node.name, re.I)]
+        upgraph = pgraph.graph()
+    
+        <I><FONT COLOR="#B22222"># for each matching node create a temporary upgraph and add it to the parent upgraph.
+    </FONT></I>    <B><FONT COLOR="#A020F0">for</FONT></B> node <B><FONT COLOR="#A020F0">in</FONT></B> matches:
+            tmp_graph = module.graph up(node.ea start, -1)
+            upgraph.graph cat(tmp_graph)
+    
+        <I><FONT COLOR="#B22222"># write the intersection of the down graph from the current function and the upgraph from
+    </FONT></I>    <I><FONT COLOR="#B22222"># the discovered interested nodes to disk in gml format.
+    </FONT></I>    downgraph.graph intersect(upgraph)
+    
+        <B><FONT COLOR="#A020F0">if</FONT></B> len(downgraph.nodes):
+            fh = open(<B><FONT COLOR="#BC8F8F">&quot;%s.gml&quot;</FONT></B> % function.name, <B><FONT COLOR="#BC8F8F">&quot;w+&quot;</FONT></B>)
+            fh.write(downgraph.render graph gml())
+            fh.close()
+</pre>
+
+Together, PIDA and PyDbg offer a powerful combination for building a variety of tools. Consider for example the ease of re-creating <a href="http://www.openrce.org/downloads/details/171/Process%20Stalker">Process Stalker</a> on top of this platform. Simply generate a PIDA module, load it in a PyDbg script, step through the functions / basic blocks within the module setting breakpoints along the way and finally register a breakpoint handler that logs the breakpoint hits to disk.
+</td><td valign=top><img src="../logos/paimei-6.jpg"></td></tr></table>
+
+<a name="future_development"></a><h2>Entity Relationship Diagram</h2>
+
+The following entity relationship diagram should give you a good overall feel for how the framework is organized:
+
+<center><p><img src="images/erd.gif"></p></center>
+
+The specifics of each of the above components is detailed later in this document.
+
+<a name="future_development"></a><h2>Future Development</h2>
+
+There are a bunch of tools and utilities I want to and have already built on this framework. One <b>major</b> need for improvement is in the memory consumption of loaded PIDA modules. Full analysis (vs. function or basic block only) PIDA modules consume a drastic amount of memory. The likely solution to this problem will be to create some form of "on demand" access to the underlying data as opposed to loading the entire data structure into memory from the get go. If anyone has a creative solution to this problem, please let me know.
+
+</body>
+</html>

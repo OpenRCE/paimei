@@ -1,0 +1,153 @@
+Welcome to Pai Mei/PyDbg for Mac OS X.  This code is still under development so probably has bugs.  Please 
+report them.  I'll try to fix them but it may take a bit.  I'll happily accept patches :):):)
+
+There are 2 directories.  The first is the Pai mei directory.  It is a fork from a couple of years ago.  It 
+didn't change much at all compared to that time, but unfortunately the project moved on and so its quite different
+from the latest snapshot.  The other is macdll which is a dylib that converts windows API calls to things a mac 
+can understand.  Its like a 1% implementation of wine.  You need to place this dylib in the pydbg directory (there
+is already a copy there) or somewhere it is globally available (see macdll/README).  
+
+Below are instructions to install and test pydbg.
+
+///////////////////////////////////////////////////////////////////////////////////////////
+Installation instructions
+///////////////////////////////////////////////////////////////////////////////////////////
+Got python 2.4?
+$ python -V
+Python 2.4.4
+
+get and install ctypes
+http://downloads.sourceforge.net/ctypes/ctypes-1.0.2.tar.gz?modtime=1179259137&big_mirror=0
+
+get and install wxPython
+http://downloads.sourceforge.net/wxpython/wxPython2.8-osx-ansi-2.8.9.1-universal-py2.4.dmg
+
+get and install MySQL 5.0 (community server)
+http://dev.mysql.com/get/Downloads/MySQL-5.0/mysql-5.0.67-osx10.5-x86.dmg/from/http://mysql-mirror.codehelpers.com/
+
+Drag MySQL.prefPane to the System Prefernces.  Now you can start/stop the server there.  Start it.
+
+Test that mysql is working:
+$ export PATH=$PATH:/usr/local//mysql-5.0.67-osx10.5-x86/bin
+$ mysql -u root
+Welcome to the MySQL monitor.  Commands end with ; or \g.
+Your MySQL connection id is 9
+Server version: 5.0.67 MySQL Community Server (GPL)
+
+Type 'help;' or '\h' for help. Type '\c' to clear the buffer.
+
+mysql>
+
+get and install mysql-python
+http://downloads.sourceforge.net/mysql-python/MySQL-python-1.2.2.tar.gz?modtime=1172959928&big_mirror=0
+
+Before installing set path: export PATH=$PATH:/usr/local//mysql-5.0.67-osx10.5-x86/bin
+
+$ python __setup_mysql.py localhost root
+$ python setup.py install
+
+get and and untar/unzip libdasm from
+http://www.klake.org/~jt/misc/libdasm-1.5.tar.gz
+$ cd pydasm
+$ python setup.py build_ext
+$ python setup.py install
+
+## set permissions of python to be able to debug (same as gdb)
+$ sudo chgrp procmod /Library/Frameworks/Python.framework/Versions/Current/bin/python2.4
+$ sudo chmod 2755 /Library/Frameworks/Python.framework/Versions/Current/bin/python2.4
+
+## check that pydbg is installed properly
+$ cd pydbg
+$ python2.4
+>>> import pydbg
+>>>>
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+Pydbg examples on mac
+///////////////////////////////////////////////////////////////////////////////////////////////////
+test is a binary which counts by one every second.
+
+///// Basic breakpoints
+test2.py: print context before each print.
+Run test in one window.  Run test2.py in another
+
+$ ps | grep test
+13946 ttys000    0:00.00 grep test
+13943 ttys002    0:00.00 ./test
+$ python test2.py 13943
+--------------------------------Dumping context
+CONTEXT DUMP
+  EIP: 00001fd3 call 0x3005
+  EAX: 00001ff9 (      8185) -> N/A
+  EBX: 00001fa6 (      8102) -> N/A
+....
+
+///// Hardware breakpoints
+$ python test4.py 13992 
+Software breakpoint
+Hardware breakpoint
+
+///// Crash monitoring
+test2 is a program that crashes in 5 seconds.
+Run it in one windown and in another: 
+$ python test5.py 13992 
+CONTEXT DUMP
+  EIP: 00001fe2 mov dword [eax],0x45
+  EAX: 00000000 (         0) -> N/A
+....
+
+///// Process snapshotting
+$ python test6.py 14065
+Eax: 1c
+-------Taking process snaphost
+-------Done taking snapshot
+-------All threads resumed
+Eax: 1d
+Eax: 1e
+Eax: 1f
+Eax: 20
+Eax: 21
+Eax: 22
+Eax: 23
+-------restoring process snapshot
+Eax: 1d
+Eax: 1e
+...
+
+///// Single stepping
+$ python test7.py 14065 
+-------breakpoint
+Single stepping EIP=1fdc
+Single stepping EIP=1fdf
+Single stepping EIP=1fe6
+Single stepping EIP=300a
+Single stepping EIP=903a4e6c
+Single stepping EIP=903a4e6d
+...
+
+///// Memory searching
+$ python test9.py 14065 
+ 
+8fe25d80: 4c 44 5f 46 52 41 4d 45 57 4f 52 4b 5f 50 41 54  LD_FRAMEWORK_PAT
+8fe25d90: 48 00 44 59 4c 44 5f 46 41 4c 4c 42 41 43 4b 5f H.DYLD_FALLBACK_
+
+ 
+bffffaa0: 73 74 00 00 2e 2f 74 65 73 74 00 4d 41 4e 50 41  st.../test.MANPA
+bffffab0: 54 48 3d 2f 75 73 72 2f 73 68 61 72 65 2f 6d 61 TH=/usr/share/ma
+
+///// Some pida stuff
+$ python test14.py
+Function _memcpy starts at c203 and ends at c207
+     Basic block c203
+Function _calc_yylex starts at 6605 and ends at 73ad
+     Basic block 7200
+...
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+Pai Mei
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+$ cd console
+$ cp ../pydbg/libmacdll.dylib .
+$ python PAIMEIconsole.pyw 
+
+

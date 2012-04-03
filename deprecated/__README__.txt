@@ -1,0 +1,2 @@
+This directory contains various older scripts that are either unfinished, deprecated due to to interface changes or
+altogether replaced by another implementation. They are left here to serve as examples.

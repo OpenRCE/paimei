@@ -1,0 +1,7 @@
+#
+# $Id: defines.py 194 2007-04-05 15:31:53Z cameron $
+#
+FUNCTION_LEVEL    = 0x0001
+BASIC_BLOCK_LEVEL = 0x0002
+ACCURACY_HIGH     = 0x0003
+ACCURACY_LOW      = 0x0004
